@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>“My first iPython Notebook post” | Titanic</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Fluent Python 第二部分 数据结构2.8 用bisect来管理已排序的序列12345678import bisectimport sysHAYSTACK=[1,4,5,23,23,26,29,30]postion=bisect.bisect(HAYSTACK, 23)print(postion)postion=bisect.bisect_left(HAYSTACK, 23)print(">
+<meta property="og:type" content="article">
+<meta property="og:title" content="“My first iPython Notebook post”">
+<meta property="og:url" content="http://yoursite.com/2019/07/15/Fluent_Python/index.html">
+<meta property="og:site_name" content="Titanic">
+<meta property="og:description" content="Fluent Python 第二部分 数据结构2.8 用bisect来管理已排序的序列12345678import bisectimport sysHAYSTACK=[1,4,5,23,23,26,29,30]postion=bisect.bisect(HAYSTACK, 23)print(postion)postion=bisect.bisect_left(HAYSTACK, 23)print(">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-07-15T12:10:24.722Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="“My first iPython Notebook post”">
+<meta name="twitter:description" content="Fluent Python 第二部分 数据结构2.8 用bisect来管理已排序的序列12345678import bisectimport sysHAYSTACK=[1,4,5,23,23,26,29,30]postion=bisect.bisect(HAYSTACK, 23)print(postion)postion=bisect.bisect_left(HAYSTACK, 23)print(">
+  
+    <link rel="alternate" href="/atom.xml" title="Titanic" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Titanic</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">a 1997 American romance film</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Fluent_Python" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/07/15/Fluent_Python/" class="article-date">
+  <time datetime="2019-07-15T12:10:24.722Z" itemprop="datePublished">2019-07-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      “My first iPython Notebook post”
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Fluent Python</p>
+<h1 id="第二部分-数据结构"><a href="#第二部分-数据结构" class="headerlink" title="第二部分 数据结构"></a>第二部分 数据结构</h1><h2 id="2-8-用bisect来管理已排序的序列"><a href="#2-8-用bisect来管理已排序的序列" class="headerlink" title="2.8 用bisect来管理已排序的序列"></a>2.8 用bisect来管理已排序的序列</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import bisect</span><br><span class="line">import sys</span><br><span class="line"></span><br><span class="line">HAYSTACK=[1,4,5,23,23,26,29,30]</span><br><span class="line">postion=bisect.bisect(HAYSTACK, 23)</span><br><span class="line">print(postion)</span><br><span class="line">postion=bisect.bisect_left(HAYSTACK, 23)</span><br><span class="line">print(postion)</span><br></pre></td></tr></table></figure>
+
+<pre><code>5
+3</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import bisect</span><br><span class="line">import sys</span><br><span class="line"></span><br><span class="line">my_list=[1,4,5,26,29,30]</span><br><span class="line">bisect.insort(my_list, 23)</span><br><span class="line">print(my_list)</span><br></pre></td></tr></table></figure>
+
+<pre><code>[1, 4, 5, 23, 26, 29, 30]</code></pre><h2 id="2-9-当列表不是首选时"><a href="#2-9-当列表不是首选时" class="headerlink" title="2.9 当列表不是首选时"></a>2.9 当列表不是首选时</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from array import array</span><br><span class="line">from random import random </span><br><span class="line">floats=array(&apos;d&apos;, (random() for i in range(10**7)))</span><br><span class="line">floats[-1]</span><br></pre></td></tr></table></figure>
+
+<pre><code>0.06586627504161835</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/07/15/Fluent_Python/" data-id="cjy4d6gj500006fxxkisczvud" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/07/15/JohnDoe/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JohnDoe</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/07/15/Fluent_Python/">“My first iPython Notebook post”</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/15/JohnDoe/">JohnDoe</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/15/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 Leonardo Dicaprio<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
