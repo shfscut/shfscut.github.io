@@ -278,7 +278,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://shfscut.github.io/2019/07/15/Fluent_Python/">
+    <link itemprop="mainEntityOfPage" href="http://shfscut.github.io/2019/07/17/fluent-python/chapter3-dictionaries-and-sets/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="shfscut">
@@ -298,7 +298,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/07/15/Fluent_Python/" class="post-title-link" itemprop="url">“My first iPython Notebook post”</a>
+                <a href="/2019/07/17/fluent-python/chapter3-dictionaries-and-sets/" class="post-title-link" itemprop="url">3. Dictionaries and Sets</a>
               
             
           </h1>
@@ -323,10 +323,306 @@
                 
               
 
-              <time title="Created: 2019-07-15 20:10:24" itemprop="dateCreated datePublished" datetime="2019-07-15T20:10:24+08:00">2019-07-15</time>
+              <time title="Created: 2019-07-17 20:32:47 / Modified: 20:40:19" itemprop="dateCreated datePublished" datetime="2019-07-17T20:32:47+08:00">2019-07-17</time>
             </span>
           
 
+          
+            
+
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Fluent-Python/" itemprop="url" rel="index"><span itemprop="name">Fluent Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="字典和集合"><a href="#字典和集合" class="headerlink" title="字典和集合"></a>字典和集合</h1><p>本章内容大纲：</p>
+<ul>
+<li>常见的字典方法</li>
+<li>如何处理查找不到的键</li>
+<li>标准库中dict类型的变种</li>
+<li>set和frozenset类型</li>
+<li>散列表的工作原理</li>
+<li>散列表带来的潜在影响</li>
+</ul>
+<h2 id="3-1-泛映射类型"><a href="#3-1-泛映射类型" class="headerlink" title="3.1 泛映射类型"></a>3.1 泛映射类型</h2><p>collections.abc模块中有Mapping和MutableMapping抽象基类，用于dict和其他类dict类型定义形式接口</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> abc</span><br><span class="line">my_dict=&#123;&#125;</span><br><span class="line">isinstance(my_dict, abc.Mapping)</span><br></pre></td></tr></table></figure>
+
+<pre><code>True</code></pre><h2 id="3-2-字典推导"><a href="#3-2-字典推导" class="headerlink" title="3.2 字典推导"></a>3.2 字典推导</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 字典推导的应用</span></span><br><span class="line">DIAL_CODES=[</span><br><span class="line">    (<span class="number">86</span>, <span class="string">'China'</span>),</span><br><span class="line">    (<span class="number">91</span>, <span class="string">'India'</span>),</span><br><span class="line">    (<span class="number">1</span>, <span class="string">'United States'</span>)</span><br><span class="line">]</span><br><span class="line">country_code=&#123;country:code <span class="keyword">for</span> code, country <span class="keyword">in</span> DIAL_CODES&#125;</span><br><span class="line">country_code</span><br></pre></td></tr></table></figure>
+
+<pre><code>{&apos;China&apos;: 86, &apos;India&apos;: 91, &apos;United States&apos;: 1}</code></pre><h2 id="3-3-常见的映射方法"><a href="#3-3-常见的映射方法" class="headerlink" title="3.3 常见的映射方法"></a>3.3 常见的映射方法</h2><p>用setdefault处理找不到的键</p>
+<p>A: <code>my_dict.setdefault(key, []).append(new_value)</code></p>
+<p>B:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if key not in my_dict:</span><br><span class="line">    my_dict[key]=[]</span><br><span class="line">my_dict[key].append(new_value)</span><br></pre></td></tr></table></figure>
+
+<p>二者的效果是一样的，只是B至少进行了两次键查询，如果键不存在则需要三次，而A只需要一次就可以完成整个操作</p>
+<h2 id="3-4-映射的弹性键查询"><a href="#3-4-映射的弹性键查询" class="headerlink" title="3.4 映射的弹性键查询"></a>3.4 映射的弹性键查询</h2><h3 id="3-4-1-defaultdict-处理找不到的键的一个选择"><a href="#3-4-1-defaultdict-处理找不到的键的一个选择" class="headerlink" title="3.4.1 defaultdict: 处理找不到的键的一个选择"></a>3.4.1 defaultdict: 处理找不到的键的一个选择</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line">s = [(<span class="string">'yellow'</span>, <span class="number">1</span>), (<span class="string">'blue'</span>, <span class="number">2</span>), (<span class="string">'yellow'</span>, <span class="number">3</span>), (<span class="string">'blue'</span>, <span class="number">4</span>), (<span class="string">'red'</span>, <span class="number">1</span>)]</span><br><span class="line">d = defaultdict(list)</span><br><span class="line"><span class="keyword">for</span> k,v <span class="keyword">in</span> s:</span><br><span class="line">    d[k].append(v)</span><br><span class="line">d</span><br></pre></td></tr></table></figure>
+
+<pre><code>defaultdict(list, {&apos;yellow&apos;: [1, 3], &apos;blue&apos;: [2, 4], &apos;red&apos;: [1]})</code></pre><p>defaultdict的default_factory(即list)只会在<code>__getitem__</code>里被调用，其他方法中不会发挥作用
+d[k]: 调用default_factory创造默认值
+d.get(k)则返回None</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d.get(<span class="string">'black'</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d[<span class="string">'black'</span>]</span><br></pre></td></tr></table></figure>
+
+<pre><code>[]</code></pre><h3 id="3-4-2-特殊方法-missing"><a href="#3-4-2-特殊方法-missing" class="headerlink" title="3.4.2 特殊方法__missing__"></a>3.4.2 特殊方法<code>__missing__</code></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StrKeyDict0</span><span class="params">(dict)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__missing__</span><span class="params">(self, key)</span>:</span></span><br><span class="line">        <span class="comment"># isinstance判断是必需的，否则引起无限递归</span></span><br><span class="line">        <span class="keyword">if</span> isinstance(key, str):</span><br><span class="line">            <span class="keyword">raise</span> KeyError(key)</span><br><span class="line">        <span class="keyword">return</span> self[str(key)]</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, key, default=None)</span>:</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">return</span> self[key]</span><br><span class="line">        <span class="keyword">except</span> KeyError:</span><br><span class="line">            <span class="keyword">return</span> default</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__contains__</span><span class="params">(self, key)</span>:</span></span><br><span class="line">        <span class="comment"># 这里不能使用key in self来检查键是否存在，会导致__contains__被递归调用</span></span><br><span class="line">        <span class="keyword">return</span> key <span class="keyword">in</span> self.keys() <span class="keyword">or</span> str(key) <span class="keyword">in</span> self.keys()</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-5-字典的变种"><a href="#3-5-字典的变种" class="headerlink" title="3.5 字典的变种"></a>3.5 字典的变种</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># collections.OrderedDict</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> OrderedDict</span><br><span class="line">d = OrderedDict.fromkeys(<span class="string">'abcde'</span>)</span><br><span class="line">d.keys()</span><br></pre></td></tr></table></figure>
+
+<pre><code>odict_keys([&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;])</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># collections.ChainMap</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> ChainMap</span><br><span class="line">baseline = &#123;<span class="string">'music'</span>: <span class="string">'bach'</span>, <span class="string">'art'</span>: <span class="string">'rembrandt'</span>&#125;</span><br><span class="line">adjustments = &#123;<span class="string">'art'</span>: <span class="string">'van gogh'</span>, <span class="string">'opera'</span>: <span class="string">'carmen'</span>&#125;</span><br><span class="line">list(ChainMap(adjustments, baseline))</span><br></pre></td></tr></table></figure>
+
+<pre><code>[&apos;music&apos;, &apos;art&apos;, &apos;opera&apos;]</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># collections.Counter</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line">ct=Counter(<span class="string">'abracadabra'</span>)</span><br><span class="line">ct</span><br></pre></td></tr></table></figure>
+
+<pre><code>Counter({&apos;a&apos;: 5, &apos;b&apos;: 2, &apos;r&apos;: 2, &apos;c&apos;: 1, &apos;d&apos;: 1})</code></pre><h2 id="3-6-子类化UserDict"><a href="#3-6-子类化UserDict" class="headerlink" title="3.6 子类化UserDict"></a>3.6 子类化UserDict</h2><p>与OrderedDict, ChainMap, Counter开箱即用类型不同，UserDict是让用户继承写子类</p>
+<p>与dict继承相比，使用UserDict继承更加合适，因为dict继承在某些方法走一些捷径，导致在子类中不得不重写这些方法，UserDict就不会有这种问题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StrKeyDict</span><span class="params">(collections.UserDict)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__missing__</span><span class="params">(self, key)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> isinstance(key, str):</span><br><span class="line">            <span class="keyword">raise</span> KeyError(key)</span><br><span class="line">        <span class="keyword">return</span> self[str(key)]</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__contains__</span><span class="params">(self, key)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> str(key) <span class="keyword">in</span> self.data</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__setitem__</span><span class="params">(self, key, item)</span>:</span></span><br><span class="line">        self.data[str(key)]=item</span><br></pre></td></tr></table></figure>
+
+<p>在这个类中没有定义3.4.2中的get方法</p>
+<p>UserDict–&gt;MutableMapping–&gt;Mapping</p>
+<p><a href="https://hg.python.org/cpython/file/3.4/Lib/_collections_abc.py#l422" target="_blank" rel="noopener">Mapping.get</a>: 与3.4.2中定义的get方法一致</p>
+<h2 id="3-7-不可变映射类型"><a href="#3-7-不可变映射类型" class="headerlink" title="3.7 不可变映射类型"></a>3.7 不可变映射类型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 用types.MappingProxyType来获取字典的只读实例mappingproxy</span></span><br><span class="line"><span class="keyword">from</span> types <span class="keyword">import</span> MappingProxyType</span><br><span class="line">d=&#123;<span class="number">1</span>:<span class="string">'A'</span>&#125;</span><br><span class="line">d_proxy=MappingProxyType(d)</span><br><span class="line">d_proxy</span><br></pre></td></tr></table></figure>
+
+<pre><code>mappingproxy({1: &apos;A&apos;})</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d_proxy[<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+
+<pre><code>&apos;A&apos;</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d_proxy[<span class="number">2</span>]=<span class="string">'x'</span></span><br></pre></td></tr></table></figure>
+
+<pre><code>---------------------------------------------------------------------------
+
+TypeError                                 Traceback (most recent call last)
+
+&lt;ipython-input-31-cb84dba8e1f4&gt; in &lt;module&gt;()
+----&gt; 1 d_proxy[2]=&apos;x&apos;
+
+
+TypeError: &apos;mappingproxy&apos; object does not support item assignment</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">d[<span class="number">2</span>]=<span class="string">'B'</span></span><br><span class="line">d_proxy</span><br></pre></td></tr></table></figure>
+
+<pre><code>mappingproxy({1: &apos;A&apos;, 2: &apos;B&apos;})</code></pre><p>设计时，把d_proxy作为公共属性暴露给api用户，这样就不能修改d这个映射了</p>
+<h2 id="3-8-集合论"><a href="#3-8-集合论" class="headerlink" title="3.8 集合论"></a>3.8 集合论</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 集合唯一性</span></span><br><span class="line">l = [<span class="string">'spam'</span>, <span class="string">'spam'</span>, <span class="string">'eggs'</span>, <span class="string">'spam'</span>]</span><br><span class="line">set(l)</span><br></pre></td></tr></table></figure>
+
+<pre><code>{&apos;eggs&apos;, &apos;spam&apos;}</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 集合实现了很多基础中缀运算符: a|b, a&amp;b, a-b</span></span><br><span class="line"><span class="comment"># needles 的元素在 haystack 里出现的次数，两个变量都是 set 类型</span></span><br><span class="line"><span class="comment"># found=len(needles &amp; haystack)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-8-1-集合字面量"><a href="#3-8-1-集合字面量" class="headerlink" title="3.8.1 集合字面量"></a>3.8.1 集合字面量</h3><p>set:
+如果是空集，必须写成set()形式
+其他的类似{1}, {1,2}等</p>
+<p><code>{1,2,3} vs set([1,2,3])</code>
+后者速度慢，因为后者先从set查询构造方法，然后新建列表，最后传入构造方法中。而前者，python会使用专门的BUILD_SET字节码来创建集合</p>
+<p>frozenset:只能采用构造方法，因为没有提供特殊字面量语法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">frozenset(range(<span class="number">10</span>))</span><br></pre></td></tr></table></figure>
+
+<pre><code>frozenset({0, 1, 2, 3, 4, 5, 6, 7, 8, 9})</code></pre><h3 id="3-8-2-集合推导"><a href="#3-8-2-集合推导" class="headerlink" title="3.8.2 集合推导"></a>3.8.2 集合推导</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> unicodedata <span class="keyword">import</span> name</span><br><span class="line">&#123;chr(i) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">32</span>, <span class="number">256</span>) <span class="keyword">if</span> <span class="string">'SIGN'</span> <span class="keyword">in</span> name(chr(i), <span class="string">''</span>)&#125;</span><br></pre></td></tr></table></figure>
+
+<pre><code>{&apos;#&apos;,
+ &apos;$&apos;,
+ &apos;%&apos;,
+ &apos;+&apos;,
+ &apos;&lt;&apos;,
+ &apos;=&apos;,
+ &apos;&gt;&apos;,
+ &apos;¢&apos;,
+ &apos;£&apos;,
+ &apos;¤&apos;,
+ &apos;¥&apos;,
+ &apos;§&apos;,
+ &apos;©&apos;,
+ &apos;¬&apos;,
+ &apos;®&apos;,
+ &apos;°&apos;,
+ &apos;±&apos;,
+ &apos;µ&apos;,
+ &apos;¶&apos;,
+ &apos;×&apos;,
+ &apos;÷&apos;}</code></pre><h3 id="3-8-3-集合的操作"><a href="#3-8-3-集合的操作" class="headerlink" title="3.8.3 集合的操作"></a>3.8.3 集合的操作</h3><h2 id="3-9-dict和set的背后"><a href="#3-9-dict和set的背后" class="headerlink" title="3.9 dict和set的背后"></a>3.9 dict和set的背后</h2><h3 id="3-9-1-一个关于效率的实验"><a href="#3-9-1-一个关于效率的实验" class="headerlink" title="3.9.1 一个关于效率的实验"></a>3.9.1 一个关于效率的实验</h3><p>从haystack查找needles元素
+dict: O(1)
+set:  O(1)
+list: O(n)</p>
+<h3 id="3-9-2-字典中的散列表"><a href="#3-9-2-字典中的散列表" class="headerlink" title="3.9.2 字典中的散列表"></a>3.9.2 字典中的散列表</h3><p>python使用散列表实现dict类型</p>
+<p>散列表：稀疏数组
+python设法保证大概三分之一的表元是空的，当快到达到阈值时，原来的散列表被复制到更大的空间里面</p>
+<h3 id="3-9-3-dict的实现及其导致的结果"><a href="#3-9-3-dict的实现及其导致的结果" class="headerlink" title="3.9.3 dict的实现及其导致的结果"></a>3.9.3 dict的实现及其导致的结果</h3><ol>
+<li><p>键必须是可散列的</p>
+<ul>
+<li>支持hash()函数</li>
+<li>支持<strong>eq</strong>()方法检测相等性</li>
+<li>a==b, 则hash(a)==hash(b)</li>
+</ul>
+</li>
+<li><p>字典在内存中的开销很大
+因为使用了散列表，稀疏数组</p>
+</li>
+<li><p>键查询很快
+dict实现是典型的空间换时间</p>
+</li>
+<li><p>键的次序取决于添加顺序</p>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dialcodes.py 将同样的数据以不同的顺序添加到 3 个字典里</span></span><br><span class="line">DIAL_CODES = [</span><br><span class="line">             (<span class="number">86</span>, <span class="string">'China'</span>),</span><br><span class="line">             (<span class="number">91</span>, <span class="string">'India'</span>),</span><br><span class="line">             (<span class="number">1</span>, <span class="string">'United States'</span>),</span><br><span class="line">             (<span class="number">62</span>, <span class="string">'Indonesia'</span>),</span><br><span class="line">             (<span class="number">55</span>, <span class="string">'Brazil'</span>),</span><br><span class="line">             (<span class="number">92</span>, <span class="string">'Pakistan'</span>),</span><br><span class="line">             (<span class="number">880</span>, <span class="string">'Bangladesh'</span>),</span><br><span class="line">             (<span class="number">234</span>, <span class="string">'Nigeria'</span>),</span><br><span class="line">             (<span class="number">7</span>, <span class="string">'Russia'</span>),</span><br><span class="line">             (<span class="number">81</span>, <span class="string">'Japan'</span>),</span><br><span class="line">]</span><br><span class="line">d1=dict(DIAL_CODES)</span><br><span class="line">print(<span class="string">'d1:'</span>, d1.keys())</span><br><span class="line">d2=dict(sorted(DIAL_CODES))</span><br><span class="line">print(<span class="string">'d2:'</span>, d2.keys())</span><br><span class="line">d3=dict(sorted(DIAL_CODES, key=<span class="keyword">lambda</span> x:x[<span class="number">1</span>]))</span><br><span class="line">print(<span class="string">'d3:'</span>, d3.keys())</span><br><span class="line"><span class="keyword">assert</span> d1==d2 <span class="keyword">and</span> d2==d3</span><br></pre></td></tr></table></figure>
+
+<pre><code>d1: dict_keys([86, 91, 1, 62, 55, 92, 880, 234, 7, 81])
+d2: dict_keys([1, 7, 55, 62, 81, 86, 91, 92, 234, 880])
+d3: dict_keys([880, 55, 86, 91, 62, 81, 234, 92, 7, 1])</code></pre><ol start="5">
+<li>往字典里添加新建可能会改变已有键的顺序</li>
+</ol>
+<p>添加新键，可能字典扩容，导致新建更大的散列表，并把字典已有的元素添加到新表中。可能产生散列冲突，导致新散列表中键的次序变化。所以在迭代字典过程中同时对字典进行修改，可能会跳过一些键。所以不要在<strong>字典迭代时进行修改</strong></p>
+<h3 id="3-9-4-set实现以及导致的结果"><a href="#3-9-4-set实现以及导致的结果" class="headerlink" title="3.9.4 set实现以及导致的结果"></a>3.9.4 set实现以及导致的结果</h3><p>set和frozenset的实现也依赖散列表</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://shfscut.github.io/2019/07/17/ipynb-to-md/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shfscut">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Titanic">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/17/ipynb-to-md/" class="post-title-link" itemprop="url">ipynb-to-md</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-17 20:17:27 / Modified: 20:21:57" itemprop="dateCreated datePublished" datetime="2019-07-17T20:17:27+08:00">2019-07-17</time>
+            </span>
+          
+
+          
+            
+
+            
           
 
           
@@ -365,16 +661,625 @@
       
         
           
-            <p>Fluent Python</p>
-<h1 id="第二部分-数据结构"><a href="#第二部分-数据结构" class="headerlink" title="第二部分 数据结构"></a>第二部分 数据结构</h1><h2 id="2-8-用bisect来管理已排序的序列"><a href="#2-8-用bisect来管理已排序的序列" class="headerlink" title="2.8 用bisect来管理已排序的序列"></a>2.8 用bisect来管理已排序的序列</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import bisect</span><br><span class="line">import sys</span><br><span class="line"></span><br><span class="line">HAYSTACK=[1,4,5,23,23,26,29,30]</span><br><span class="line">postion=bisect.bisect(HAYSTACK, 23)</span><br><span class="line">print(postion)</span><br><span class="line">postion=bisect.bisect_left(HAYSTACK, 23)</span><br><span class="line">print(postion)</span><br></pre></td></tr></table></figure>
+            <p><a href="https://github.com/jupyter/nbconvert" target="_blank" rel="noopener">jupyter nbconvert</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">jupyter nbconvert --to &lt;output format&gt; &lt;input notebook&gt;</span><br><span class="line"></span><br><span class="line">ex:</span><br><span class="line">jupyter nbconvert --to html mynotebook.ipynb</span><br><span class="line">jupyter nbconvert --to markdown mynotebook.ipynb</span><br></pre></td></tr></table></figure>
 
-<pre><code>5
-3</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import bisect</span><br><span class="line">import sys</span><br><span class="line"></span><br><span class="line">my_list=[1,4,5,26,29,30]</span><br><span class="line">bisect.insort(my_list, 23)</span><br><span class="line">print(my_list)</span><br></pre></td></tr></table></figure>
 
-<pre><code>[1, 4, 5, 23, 26, 29, 30]</code></pre><h2 id="2-9-当列表不是首选时"><a href="#2-9-当列表不是首选时" class="headerlink" title="2.9 当列表不是首选时"></a>2.9 当列表不是首选时</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from array import array</span><br><span class="line">from random import random </span><br><span class="line">floats=array(&apos;d&apos;, (random() for i in range(10**7)))</span><br><span class="line">floats[-1]</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
 
-<pre><code>0.06586627504161835</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    
 
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://shfscut.github.io/2019/07/17/fluent-python/chapter2-an-array-of-sequences/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shfscut">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Titanic">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/17/fluent-python/chapter2-an-array-of-sequences/" class="post-title-link" itemprop="url">2. An Array of Sequences</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-17 13:10:00 / Modified: 20:39:46" itemprop="dateCreated datePublished" datetime="2019-07-17T13:10:00+08:00">2019-07-17</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Fluent-Python/" itemprop="url" rel="index"><span itemprop="name">Fluent Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本章讨论的内容是序列类型</p>
+<h2 id="2-1-内置序列类型概览"><a href="#2-1-内置序列类型概览" class="headerlink" title="2.1 内置序列类型概览"></a>2.1 内置序列类型概览</h2><h3 id="根据存储数据类型分类"><a href="#根据存储数据类型分类" class="headerlink" title="根据存储数据类型分类"></a>根据存储数据类型分类</h3><p>容器序列: 能存放不同类型的数据</p>
+<p>​    list, tuple, collections.deque</p>
+<p>扁平序列：只能容纳一种类型</p>
+<p>​    str, bytes, byte array, memoryview, array.array</p>
+<h3 id="根据是否被修改分类"><a href="#根据是否被修改分类" class="headerlink" title="根据是否被修改分类"></a>根据是否被修改分类</h3><p>可变类型</p>
+<p>​    list, byte array, array.array, collections.deque, memoryview</p>
+<p>不可变类型</p>
+<p>​    tuple, str, bytes</p>
+<h2 id="2-2-列表推导和生成器表达式"><a href="#2-2-列表推导和生成器表达式" class="headerlink" title="2.2 列表推导和生成器表达式"></a>2.2 列表推导和生成器表达式</h2><h3 id="2-2-1-列表推导和可读性"><a href="#2-2-1-列表推导和可读性" class="headerlink" title="2.2.1 列表推导和可读性"></a>2.2.1 列表推导和可读性</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 字符串变成unicode码</span></span><br><span class="line">symbols = <span class="string">'$¢£¥€¤'</span></span><br><span class="line">codes = []</span><br><span class="line"><span class="keyword">for</span> symbol <span class="keyword">in</span> symbols:</span><br><span class="line">  codes.append(ord(symbol))</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 列表推导式写法</span></span><br><span class="line">codes = [ord(symbol) <span class="keyword">for</span> symbol <span class="keyword">in</span> symbols]</span><br></pre></td></tr></table></figure>
+
+<p>NOTE：列表推导不会再有变量泄漏的问题</p>
+<img src="/2019/07/17/fluent-python/chapter2-an-array-of-sequences/2-variable-leakage-list-derivation">
+
+
+
+<h3 id="2-2-2-列表推导同filter和map的比较"><a href="#2-2-2-列表推导同filter和map的比较" class="headerlink" title="2.2.2 列表推导同filter和map的比较"></a>2.2.2 列表推导同filter和map的比较</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">symbols = <span class="string">'$¢£¥€¤'</span></span><br><span class="line"><span class="comment"># 列表推导</span></span><br><span class="line">beyond_ascii = [ord(s) <span class="keyword">for</span> s <span class="keyword">in</span> symbols <span class="keyword">if</span> ord(s) &gt; <span class="number">127</span>]</span><br><span class="line"><span class="comment"># map/filter</span></span><br><span class="line">beyond_ascii = list(filter(<span class="keyword">lambda</span> c: c&gt;<span class="number">127</span>, map(ord, symbols)))</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-3-笛卡尔积"><a href="#2-2-3-笛卡尔积" class="headerlink" title="2.2.3 笛卡尔积"></a>2.2.3 笛卡尔积</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">colors = [<span class="string">'black'</span>, <span class="string">'white'</span>]</span><br><span class="line">sizes = [<span class="string">'S'</span>, <span class="string">'M'</span>, <span class="string">'L'</span>]</span><br><span class="line">tshirts = [(color, size) <span class="keyword">for</span> color <span class="keyword">in</span> colors <span class="keyword">for</span> size <span class="keyword">in</span> sizes]</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-4-生成器表达式"><a href="#2-2-4-生成器表达式" class="headerlink" title="2.2.4 生成器表达式"></a>2.2.4 生成器表达式</h3><p>生成器表达式的语法跟列表推导差不多，只不过是方括号换成圆括号而已</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">symbols = <span class="string">'$¢£¥€¤'</span></span><br><span class="line"><span class="comment"># 生成器推导</span></span><br><span class="line">beyond_ascii = (ord(s) <span class="keyword">for</span> s <span class="keyword">in</span> symbols <span class="keyword">if</span> ord(s) &gt; <span class="number">127</span>)</span><br><span class="line"></span><br><span class="line">colors = [<span class="string">'black'</span>, <span class="string">'white'</span>]</span><br><span class="line">sizes = [<span class="string">'S'</span>, <span class="string">'M'</span>, <span class="string">'L'</span>]</span><br><span class="line">tshirts = ((color, size) <span class="keyword">for</span> color <span class="keyword">in</span> colors <span class="keyword">for</span> size <span class="keyword">in</span> sizes)</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-元组不仅仅是不可变的列表"><a href="#2-3-元组不仅仅是不可变的列表" class="headerlink" title="2.3 元组不仅仅是不可变的列表"></a>2.3 元组不仅仅是不可变的列表</h2><h3 id="2-3-1-元组和记录"><a href="#2-3-1-元组和记录" class="headerlink" title="2.3.1 元组和记录"></a>2.3.1 元组和记录</h3><p>元组可以对数据记录，每个元素记录了字段的数据</p>
+<p><code>city, year, pop, chg, area = (&#39;Tokyo&#39;, 2003, 32450, 0.66, 8014)</code></p>
+<h3 id="2-3-2-元组拆包"><a href="#2-3-2-元组拆包" class="headerlink" title="2.3.2 元组拆包"></a>2.3.2 元组拆包</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lax_coordinates = (<span class="number">33.9425</span>, <span class="number">-118.408056</span>)</span><br><span class="line">latitude, longitude = lax_coordinates <span class="comment"># 元组拆包</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 用*来处理剩下的元素</span></span><br><span class="line">a, b, *rest=range(<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+
+<p>关于拆包，可以参考<a href="https://www.python.org/dev/peps/pep-3132/" target="_blank" rel="noopener">可迭代元素拆包</a></p>
+<h3 id="2-3-3-嵌套元组拆包"><a href="#2-3-3-嵌套元组拆包" class="headerlink" title="2.3.3 嵌套元组拆包"></a>2.3.3 嵌套元组拆包</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">metro_areas = [</span><br><span class="line">  (<span class="string">'Tokyo'</span>,<span class="string">'JP'</span>,<span class="number">36.933</span>,(<span class="number">35.689722</span>,<span class="number">139.691667</span>)), </span><br><span class="line">  (<span class="string">'Delhi NCR'</span>, <span class="string">'IN'</span>, <span class="number">21.935</span>, (<span class="number">28.613889</span>, <span class="number">77.208889</span>)), </span><br><span class="line">  (<span class="string">'Mexico City'</span>, <span class="string">'MX'</span>, <span class="number">20.142</span>, (<span class="number">19.433333</span>, <span class="number">-99.133333</span>))</span><br><span class="line">]</span><br><span class="line"><span class="comment"># 嵌套元组拆包</span></span><br><span class="line"><span class="keyword">for</span> name, cc, pop, (latitude, longitude) <span class="keyword">in</span> metro_areas:</span><br><span class="line">	<span class="keyword">if</span> longitude &lt;= <span class="number">0</span>:</span><br><span class="line">		print(fmt.format(name, latitude, longitude))</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-4-具名元组"><a href="#2-3-4-具名元组" class="headerlink" title="2.3.4 具名元组"></a>2.3.4 具名元组</h3><p><code>collections.namedtuple</code>: 用来构建只有少数属性但是没有方法的对象</p>
+<p><code>_fields</code>属性：包含这个类所有字段名称的元组</p>
+<p><code>_make</code> : 接收可迭代对象生成类实例，作用类似<code>City(*delhi_data)</code></p>
+<p><code>_asdict</code>: 具名元组以<code>collections.OrderedDict</code>形式返回</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> collections <span class="keyword">import</span> namedtuple</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>City = namedtuple(<span class="string">'City'</span>, <span class="string">'name country population coordinates'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>City._fields</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>LatLong=namedtuple(<span class="string">'LatLong'</span>, <span class="string">'lat long'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>delhi_data = (<span class="string">'Delhi NCR'</span>, <span class="string">'IN'</span>, <span class="number">21.935</span>, LatLong(<span class="number">28.613889</span>, <span class="number">77.208889</span>))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>delhi = City._make(delhi_data)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>delhi._asdict()</span><br><span class="line">OrderedDict([(<span class="string">'name'</span>, <span class="string">'Delhi NCR'</span>), (<span class="string">'country'</span>, <span class="string">'IN'</span>), (<span class="string">'population'</span>, <span class="number">21.935</span>), (<span class="string">'coordinates'</span>, LatLong(lat=<span class="number">28.613889</span>, long=<span class="number">77.208889</span>))])</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-5-作为不可变列表的元组"><a href="#2-3-5-作为不可变列表的元组" class="headerlink" title="2.3.5 作为不可变列表的元组"></a>2.3.5 作为不可变列表的元组</h3><p>较之list， 除了增减元素相关的方法以外，元组支持列表的其他所有方法</p>
+<h2 id="2-4-切片"><a href="#2-4-切片" class="headerlink" title="2.4 切片"></a>2.4 切片</h2><h3 id="2-4-1-为什么切片和区间会忽略最后一个元素"><a href="#2-4-1-为什么切片和区间会忽略最后一个元素" class="headerlink" title="2.4.1 为什么切片和区间会忽略最后一个元素"></a>2.4.1 为什么切片和区间会忽略最后一个元素</h3><ol>
+<li>通过最后一个位置信息，快速看出切片和区间有几个元素：range(3)和my_list[:3]都返回3个元素</li>
+<li>当起止位置信息都可见时，快速计算切片和区间的长度，下标(stop-start)即可</li>
+<li>my_list[:x]和my_list[x:] 分割成不重叠的两部分</li>
+</ol>
+<h3 id="2-4-2-对对象进行切片"><a href="#2-4-2-对对象进行切片" class="headerlink" title="2.4.2 对对象进行切片"></a>2.4.2 对对象进行切片</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>s = <span class="string">'bicycle'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>s[::<span class="number">3</span>]</span><br><span class="line"><span class="string">'bye'</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-3-多维切片和省略"><a href="#2-4-3-多维切片和省略" class="headerlink" title="2.4.3 多维切片和省略"></a>2.4.3 多维切片和省略</h3><p>多维切片：见2.9.3 Numpy</p>
+<p>省略：Ellipsis</p>
+<h3 id="2-4-4-给切片赋值"><a href="#2-4-4-给切片赋值" class="headerlink" title="2.4.4 给切片赋值"></a>2.4.4 给切片赋值</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l = list(range(<span class="number">10</span>))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l</span><br><span class="line">[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l[<span class="number">2</span>:<span class="number">5</span>] = [<span class="number">20</span>, <span class="number">30</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l</span><br><span class="line">[<span class="number">0</span>, <span class="number">1</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">del</span> l[<span class="number">5</span>:<span class="number">7</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l</span><br><span class="line">[<span class="number">0</span>, <span class="number">1</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">5</span>, <span class="number">8</span>, <span class="number">9</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l[<span class="number">3</span>::<span class="number">2</span>] = [<span class="number">11</span>, <span class="number">22</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l</span><br><span class="line">[<span class="number">0</span>, <span class="number">1</span>, <span class="number">20</span>, <span class="number">11</span>, <span class="number">5</span>, <span class="number">22</span>, <span class="number">9</span>]</span><br><span class="line"><span class="comment"># 如果赋值的对象时一个切片，那么赋值语句右侧必须是可迭代对象</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l[<span class="number">2</span>:<span class="number">5</span>] = <span class="number">100</span> </span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">       File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">     TypeError: can only assign an iterable</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l[<span class="number">2</span>:<span class="number">5</span>] = [<span class="number">100</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l</span><br><span class="line">[<span class="number">0</span>, <span class="number">1</span>, <span class="number">100</span>, <span class="number">22</span>, <span class="number">9</span>]</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-5-对序列使用-和"><a href="#2-5-对序列使用-和" class="headerlink" title="2.5 对序列使用+和*"></a>2.5 对序列使用+和*</h2><p>+和* 不修改原有的操作对象，而是构建一个全新的序列</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>board = [[<span class="string">'_'</span>] * <span class="number">3</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>)]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>board</span><br><span class="line">[[<span class="string">'_'</span>, <span class="string">'_'</span>, <span class="string">'_'</span>], [<span class="string">'_'</span>, <span class="string">'_'</span>, <span class="string">'_'</span>], [<span class="string">'_'</span>, <span class="string">'_'</span>, <span class="string">'_'</span>]] &gt;&gt;&gt; board[<span class="number">1</span>][<span class="number">2</span>] = <span class="string">'X'</span> </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>board</span><br><span class="line">[[<span class="string">'_'</span>, <span class="string">'_'</span>, <span class="string">'_'</span>], [<span class="string">'_'</span>, <span class="string">'_'</span>, <span class="string">'X'</span>], [<span class="string">'_'</span>, <span class="string">'_'</span>, <span class="string">'_'</span>]]</span><br></pre></td></tr></table></figure>
+
+<p>下列是经常遇到的错误，对同一对象的引用的列表</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>weird_board = [[<span class="string">'_'</span>] * <span class="number">3</span>] * <span class="number">3</span> </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>weird_board</span><br><span class="line">[[<span class="string">'_'</span>, <span class="string">'_'</span>, <span class="string">'_'</span>], [<span class="string">'_'</span>, <span class="string">'_'</span>, <span class="string">'_'</span>], [<span class="string">'_'</span>, <span class="string">'_'</span>, <span class="string">'_'</span>]] &gt;&gt;&gt; weird_board[<span class="number">1</span>][<span class="number">2</span>] = <span class="string">'O'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>weird_board</span><br><span class="line">[[<span class="string">'_'</span>, <span class="string">'_'</span>, <span class="string">'O'</span>], [<span class="string">'_'</span>, <span class="string">'_'</span>, <span class="string">'O'</span>], [<span class="string">'_'</span>, <span class="string">'_'</span>, <span class="string">'O'</span>]]</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-6-序列的增量赋值"><a href="#2-6-序列的增量赋值" class="headerlink" title="2.6 序列的增量赋值"></a>2.6 序列的增量赋值</h2><p><code>&gt;&gt;&gt; a += b</code> 在这个表达式中，变量名会不会关联到新的对象，取决于<code>__iadd__</code>方法是否实现</p>
+<ul>
+<li>如果a实现了<code>__iadd__</code>方法，就调用这个方法。对可变序列（例如list, bytearray, array.array）来说, a会就地改动，就像调用了a.extend(b)</li>
+<li>如果没有实现<code>__iadd__</code>方法，a+=b这个表达式的效果就等效a=a+b；首先计算a+b,得到新的对象，然后赋值给a</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>l = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(l) <span class="number">4311953800</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l *= <span class="number">2</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l</span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(l) <span class="number">4311953800</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>t = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>) </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(t) <span class="number">4312681568</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>t *= <span class="number">2</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(t) <span class="number">4301348296</span></span><br></pre></td></tr></table></figure>
+
+<p>str 不适用上述规则，因为对字符串+=太普遍，CPython对它做了优化，为str初始化内存的时候，程序预留了额外了可扩展空间，增量操作，不会涉及复制原有字符到新位置的操作。</p>
+<h2 id="2-7-list-sort方法和内置函数sorted"><a href="#2-7-list-sort方法和内置函数sorted" class="headerlink" title="2.7 list.sort方法和内置函数sorted"></a>2.7 list.sort方法和内置函数sorted</h2><p><strong>Python 的一个惯例:如果一个函数或者方法对对象进行的是就地改动，那它就应该返回None，好让调用者知道传入的参数发生了变动，而且并未产生新的对象</strong></p>
+<p>list.sort: 就地排序列表，不会新建列表</p>
+<p>sorted：新建列表作为返回值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>fruits = [<span class="string">'grape'</span>, <span class="string">'raspberry'</span>, <span class="string">'apple'</span>, <span class="string">'banana'</span>] </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sorted(fruits)</span><br><span class="line">[<span class="string">'apple'</span>, <span class="string">'banana'</span>, <span class="string">'grape'</span>, <span class="string">'raspberry'</span>] </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fruits</span><br><span class="line">[<span class="string">'grape'</span>, <span class="string">'raspberry'</span>, <span class="string">'apple'</span>, <span class="string">'banana'</span>] </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fruits.sort() </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fruits</span><br><span class="line">[<span class="string">'apple'</span>, <span class="string">'banana'</span>, <span class="string">'grape'</span>, <span class="string">'raspberry'</span>]</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-8-用bisect来管理已排序的序列"><a href="#2-8-用bisect来管理已排序的序列" class="headerlink" title="2.8 用bisect来管理已排序的序列"></a>2.8 用bisect来管理已排序的序列</h2><h3 id="2-8-1-用bisect来搜索"><a href="#2-8-1-用bisect来搜索" class="headerlink" title="2.8.1 用bisect来搜索"></a>2.8.1 用bisect来搜索</h3><p>分为bisect.bisect (bisect_right别名), bisect.bisect_left</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bisect</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">HAYSTACK=[<span class="number">1</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">23</span>,<span class="number">23</span>,<span class="number">26</span>,<span class="number">29</span>,<span class="number">30</span>]</span><br><span class="line">postion=bisect.bisect(HAYSTACK, <span class="number">23</span>)</span><br><span class="line">print(postion)</span><br><span class="line">postion=bisect.bisect_left(HAYSTACK, <span class="number">23</span>)</span><br><span class="line">print(postion)</span><br><span class="line"><span class="comment">#结果:</span></span><br><span class="line"><span class="number">5</span></span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-8-2-用bisect-insort插入新元素"><a href="#2-8-2-用bisect-insort插入新元素" class="headerlink" title="2.8.2 用bisect.insort插入新元素"></a>2.8.2 用bisect.insort插入新元素</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bisect</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">my_list=[<span class="number">1</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">26</span>,<span class="number">29</span>,<span class="number">30</span>]</span><br><span class="line">bisect.insort(my_list, <span class="number">23</span>)</span><br><span class="line">print(my_list)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">23</span>, <span class="number">26</span>, <span class="number">29</span>, <span class="number">30</span>]</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-9-当列表不是首选时"><a href="#2-9-当列表不是首选时" class="headerlink" title="2.9 当列表不是首选时"></a>2.9 当列表不是首选时</h2><h3 id="2-9-1-数组"><a href="#2-9-1-数组" class="headerlink" title="2.9.1 数组"></a>2.9.1 数组</h3><p>一个浮点型数据的创建，存入文件和从文件读取的过程</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> array <span class="keyword">import</span> array</span><br><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> random </span><br><span class="line">floats=array(<span class="string">'d'</span>, (random() <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>**<span class="number">7</span>)))</span><br><span class="line">floats[<span class="number">-1</span>]</span><br><span class="line"><span class="comment"># 0.10839796787230571</span></span><br><span class="line"></span><br><span class="line">fp=open(<span class="string">'floats.bin'</span>, <span class="string">'wb'</span>)</span><br><span class="line">floats.tofile(fp)</span><br><span class="line">fp.close()</span><br><span class="line">floats2=array(<span class="string">'d'</span>)</span><br><span class="line">fp=open(<span class="string">'floats.bin'</span>, <span class="string">'rb'</span>)</span><br><span class="line">floats2.fromfile(fp, <span class="number">10</span>**<span class="number">7</span>)</span><br><span class="line">fp.close()</span><br><span class="line">floats2[<span class="number">-1</span>]</span><br><span class="line"><span class="comment"># 0.10839796787230571</span></span><br><span class="line"></span><br><span class="line">floats2==floats</span><br><span class="line"><span class="comment"># True</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-9-2-内存视图"><a href="#2-9-2-内存视图" class="headerlink" title="2.9.2 内存视图"></a>2.9.2 内存视图</h3><p>通过改变数组中的一个字节来更新数组里某个元素的值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> array</span><br><span class="line">numbers=array.array(<span class="string">'h'</span>, [<span class="number">-2</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>])</span><br><span class="line">memv=memoryview(numbers)</span><br><span class="line">len(memv)</span><br><span class="line"><span class="comment"># 5</span></span><br><span class="line">memv[<span class="number">0</span>]</span><br><span class="line"><span class="comment"># -2</span></span><br><span class="line">memv_oct=memv.cast(<span class="string">'B'</span>)</span><br><span class="line">memv_oct.tolist()</span><br><span class="line"><span class="comment"># [254, 255, 255, 255, 0, 0, 1, 0, 2, 0]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-9-3-NumPy和SciPy"><a href="#2-9-3-NumPy和SciPy" class="headerlink" title="2.9.3 NumPy和SciPy"></a>2.9.3 NumPy和SciPy</h3><p>对numpy.ndarray的行和列进行基本操作</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy</span><br><span class="line">a=numpy.arrange(<span class="number">12</span>)</span><br><span class="line"><span class="comment"># array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11])</span></span><br><span class="line">a.shape=<span class="number">3</span>,<span class="number">4</span></span><br><span class="line">array([[ <span class="number">0</span>,  <span class="number">1</span>,  <span class="number">2</span>,  <span class="number">3</span>],</span><br><span class="line">       [ <span class="number">4</span>,  <span class="number">5</span>,  <span class="number">6</span>,  <span class="number">7</span>],</span><br><span class="line">       [ <span class="number">8</span>,  <span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>]])</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-9-4-双向队列和其他形式的队列"><a href="#2-9-4-双向队列和其他形式的队列" class="headerlink" title="2.9.4 双向队列和其他形式的队列"></a>2.9.4 双向队列和其他形式的队列</h3><ul>
+<li><p>collections.deque线程安全</p>
+<p>​    快速从两端添加或删除的数据类型</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> deque</span><br><span class="line">dq=deque(range(<span class="number">10</span>), maxlen=<span class="number">10</span>)</span><br><span class="line">dq</span><br><span class="line"><span class="comment"># deque([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], maxlen=10)</span></span><br><span class="line">dq.rotate(<span class="number">3</span>)</span><br><span class="line">dq</span><br><span class="line"><span class="comment"># deque([7, 8, 9, 0, 1, 2, 3, 4, 5, 6], maxlen=10)</span></span><br><span class="line">dq.extend([<span class="number">11</span>, <span class="number">22</span>, <span class="number">33</span>])</span><br><span class="line">dq</span><br><span class="line"><span class="comment"># deque([0, 1, 2, 3, 4, 5, 6, 11, 22, 33], maxlen=10)</span></span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>queue:</p>
+<p>​    线程安全类Queue, LifoQueue, PriorityQueue</p>
+</li>
+<li><p>multiprocessing:</p>
+<p>​    Queue设计给进程通信用的</p>
+<p>​    multiprocessing.JoinableQueue类型为任务管理提供便利</p>
+</li>
+<li><p>asyncio:</p>
+<p>​    Queue, LifoQueue, PriorityQueue, JoinableQueue，受queue和multiprocessing模块影响，为异步编程的任务管理提供便利</p>
+</li>
+<li><p>heapq:</p>
+<p>​    没有队列类，提供了heappush和heappop方法，可以把可变队列当作堆队列或优先队列使用</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://shfscut.github.io/2019/07/17/hello-world/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shfscut">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Titanic">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/17/hello-world/" class="post-title-link" itemprop="url">hello-world</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-17 12:07:59 / Modified: 20:40:52" itemprop="dateCreated datePublished" datetime="2019-07-17T12:07:59+08:00">2019-07-17</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque hendrerit lacus ut purus iaculis feugiat. Sed nec tempor elit, quis aliquam neque. Curabitur sed diam eget dolor fermentum semper at eu lorem.</p>
+</blockquote>
+
+
+<blockquote>
+<p>This is a blockquote with two paragraphs. This is first paragraph.</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://shfscut.github.io/2019/07/11/fluent-python/chapter1-python-data-model/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shfscut">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Titanic">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/11/fluent-python/chapter1-python-data-model/" class="post-title-link" itemprop="url">1. The Python Data Model</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-11 12:00:00" itemprop="dateCreated datePublished" datetime="2019-07-11T12:00:00+08:00">2019-07-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-17 20:39:17" itemprop="dateModified" datetime="2019-07-17T20:39:17+08:00">2019-07-17</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Fluent-Python/" itemprop="url" rel="index"><span itemprop="name">Fluent Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这一章的内容涉及的是Python语言参考手册里的<a href="https://docs.python.org/3/reference/datamodel.html" target="_blank" rel="noopener">Data model</a></p>
+<h2 id="1-1-一摞Python风格的纸牌"><a href="#1-1-一摞Python风格的纸牌" class="headerlink" title="1.1 一摞Python风格的纸牌"></a>1.1 一摞Python风格的纸牌</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. __getitem__</span><br><span class="line">2. __len__</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-2-如何使用特殊方法"><a href="#1-2-如何使用特殊方法" class="headerlink" title="1.2 如何使用特殊方法"></a>1.2 如何使用特殊方法</h2><h3 id="1-2-1-模拟数值类型"><a href="#1-2-1-模拟数值类型" class="headerlink" title="1.2.1 模拟数值类型"></a>1.2.1 模拟数值类型</h3><p>​    主要讲的是利用特殊方法，让自定义对象通过运算符（比如“+”）进行运算</p>
+<h3 id="1-2-2-字符串表示形式"><a href="#1-2-2-字符串表示形式" class="headerlink" title="1.2.2 字符串表示形式"></a>1.2.2 字符串表示形式</h3><p>​    涉及特殊方法<code>__repr__</code>和<code>__str__</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 字符串支持两种模式%和format, 以%为例进行说明</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyObj</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__repr__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">'1'</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">'2'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'%s'</span> % (MyObj())</span><br><span class="line"><span class="string">'2'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'%r'</span> % (MyObj())</span><br><span class="line"><span class="string">'1'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果说明：</span></span><br><span class="line"><span class="comment"># %s: 调用的是MyObj().__str__()特殊方法</span></span><br><span class="line"><span class="comment"># %r: 调用的是MyObj().__repr__()特殊方法</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-3-算术运算符"><a href="#1-2-3-算术运算符" class="headerlink" title="1.2.3 算术运算符"></a>1.2.3 算术运算符</h3><p>​    涉及特殊方法<code>__add__</code> 和 <code>__mul__</code></p>
+<h3 id="1-2-4-自定义的布尔值"><a href="#1-2-4-自定义的布尔值" class="headerlink" title="1.2.4 自定义的布尔值"></a>1.2.4 自定义的布尔值</h3><p>​    涉及特殊方法<code>__bool__</code></p>
+<h2 id="1-3-特殊方法一览"><a href="#1-3-特殊方法一览" class="headerlink" title="1.3 特殊方法一览"></a>1.3 特殊方法一览</h2><p>主要是列出了特殊方法</p>
+<img src="/2019/07/11/fluent-python/chapter1-python-data-model/special-methods-overview.png">
+
+<h2 id="为什么len不是普通方法"><a href="#为什么len不是普通方法" class="headerlink" title="为什么len不是普通方法"></a>为什么len不是普通方法</h2><p>获取一个集合元素数量是一个很常见的操作，所以在str, list, memoryview等类型上，这个操作必须高效。len被设计为特殊方法，可以有更大的优势。len(x)背后的原理是CPython直接从C结构体中读取对象的长度，完全不会调用任何方法</p>
+<h2 id="延伸阅读"><a href="#延伸阅读" class="headerlink" title="延伸阅读"></a>延伸阅读</h2><ol>
+<li>Alex Martelli: 《Python技术手册（第2版）》</li>
+<li>David Beazley： 《Python参考手册（第4版）》《Python Cookbook（第3版）中文版》</li>
+</ol>
 
           
         
@@ -461,14 +1366,58 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
     
 
     
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+        
+        
+          
+        
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span>
+        
+      </div>
+    
 
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">tags</span>
+        
+      </div>
     
   </nav>
 
